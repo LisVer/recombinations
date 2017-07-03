@@ -1,5 +1,5 @@
 #load data
-PhasMisFat3<-read.table('Input_files/PhasMisFat3.txt') ##output file Origin_alleles_fat.R
+PhasMisFat3<-read.table('Output_files/W1WC/W1/PhasMisFat3.txt') ##output file Origin_alleles_fat.R
 RecFat2<-as.matrix(PhasMisFat3)
 map<-read.table("Input_files/Chr1_map2.txt", header=TRUE) ##output file Phasing_mistakes.R
 ped<-read.table("Input_files/ped5.txt") ##output file Phasing_mistakes.R
@@ -64,7 +64,7 @@ tor3<-tor2
 for(i in 1:length(tor3)){
 for(j in 1: length(tor3[[i]])){
 for(k in 1: length(tor3[[i]][[j]])){
-if (tor3[[i]][[j]][[k]]<6){
+if (tor3[[i]][[j]][[k]]<5){
 tor3[[i]][[j]][[k]]<-0}}}}
 ##add up shifts from the same parental haplotype with zeroes in between
 tor3b<-lapply(tor3, function(x){
@@ -139,7 +139,7 @@ recomb_fat<-merge(recomb_fat, ped[,1:2], by='self')
 recomb_fat[,4]<-numeric(nrow(recomb_fat))
 for(i in 1:nrow(recomb_fat)){
 recomb_fat[i,4]<-length(which(recomb_fat[,1]==recomb_fat[i,1]))} #number of repeated observations per father
-colnames(recomb_fat)<-c('father', 'individual','recombinations','repeats')
+colnames(recomb_fat)<-c('individual','recombinations', 'father','repeats')
 recomb_fat$recombinations<-as.numeric(recomb_fat$recombinations)
 meansum <- recomb_fat %>% group_by(father) %>% summarise(meansum = mean(recombinations)) 
 meansum<- as.data.frame(meansum)
@@ -148,12 +148,12 @@ meansum<- as.data.frame(meansum)
 ###############figures#################
 pdf('Output_files/W1WC/W1/hist_rec_per_individual.pdf')
 par(mfrow=c(1,1))
-hist(as.vector(recomb3c[,1],mode="numeric"),xlab="recombinations", main='W1 recombinations per individual',right=FALSE,cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
+hist(as.vector(recomb3c[,1],mode="numeric"),xlab="recombinations", main='W1 recombinations per individual',right=FALSE,cex.lab=2, cex.axis=2, cex.main=2,xlim=c(0,20),ylim=c(0,200))
 dev.off()
 
 pdf('Output_files/W1WC/W1/hist_rec_per_father.pdf')
 par(mfrow=c(1,1))
-hist(as.vector(meansum[,2],mode='numeric'),xlab='recombinations', main='W1 recombinations per father',cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
+hist(as.vector(meansum[,2],mode='numeric'),xlab='recombinations', main='W1 recombinations per father',cex.lab=2, cex.axis=2, cex.main=2,xlim=c(0,10))
 dev.off()
 
 pdf('Output_files/W1WC/W1/inf_markers_vs_rec.pdf')
