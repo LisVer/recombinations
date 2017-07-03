@@ -1,5 +1,5 @@
 #load data
-PhasMisMot3<-read.table('Input_files/PhasMisMot3.txt') ##output file Origin_alleles_fat.R
+PhasMisMot3<-read.table('Output_files/W1WC/WC/PhasMisMot3.txt') ##output file Origin_alleles_mot.R
 RecMot2<-as.matrix(PhasMisMot3)
 map<-read.table("Input_files/Chr1_map2.txt", header=TRUE) ##output file Phasing_mistakes.R
 ped<-read.table("Input_files/ped5.txt") ##output file Phasing_mistakes.R
@@ -10,17 +10,19 @@ library(plyr)
 library(dplyr)
 
 #prepare data
+map<-map[,-3]
 colnames(map)<-c('chr','marker','pos')
 RecMot2<-RecMot2[,-1]
+cl<-70 ##core_length
 
 #count subsequent snps with the same origin
-seventy<-c(seq(0,ncol(RecMot2),by=70),ncol(RecMot2))
+seventy<-c(seq(0,ncol(RecMot2),by=cl),ncol(RecMot2))
 
 tor<-list()
 tor2<-list()
 for (j in 1:nrow(RecMot2)){
 vec<-RecMot2[j,]
-for (k in 1:(ncol(RecMot2)/70+1)){
+for (k in 1:(ncol(RecMot2)/cl+1)){
 x1<-0
 x2<-0
 tor[[k]]<-0
@@ -62,7 +64,7 @@ tor3<-tor2
 for(i in 1:length(tor3)){
 for(j in 1: length(tor3[[i]])){
 for(k in 1: length(tor3[[i]][[j]])){
-if (tor3[[i]][[j]][[k]]<6){
+if (tor3[[i]][[j]][[k]]<5){
 tor3[[i]][[j]][[k]]<-0}}}}
 ##add up shifts from the same parental haplotype with zeroes in between
 tor3b<-lapply(tor3, function(x){
@@ -134,22 +136,22 @@ core_middle[j]<-map[i,3]}}
 #recombinations per Mother
 recomb_Mot<-as.data.frame(recomb3c)
 recomb_Mot$self<-as.numeric(rownames(recomb_Mot))
-recomb_Mot<-merge(recomb_Mot, ped[,1:2], by='self')
+recomb_Mot<-merge(recomb_Mot, ped[,c(1,3)], by='self')
 recomb_Mot$V1<-as.numeric(recomb_Mot$V1)
 recomb_Mot2<-recomb_Mot[,-1]
-colnames(recomb_Mot)<-c('individual','recombinations','Mother')
+colnames(recomb_Mot)<-c('individual','recombinations','mother')
 meansum <- recomb_Mot %>% group_by(mother) %>% summarise(meansum = mean(recombinations)) 
 meansum<- as.data.frame(meansum)
 
 ###############figures#################
 pdf('Output_files/W1WC/WC/hist_rec_per_individual.pdf')
 par(mfrow=c(1,1))
-hist(as.vector(recomb3c[,1],mode="numeric"),xlab="recombinations", main='W1 recombinations per individual',right=FALSE,cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
+hist(as.vector(recomb3c[,1],mode="numeric"),xlab="recombinations", main='WC recombinations per individual',right=FALSE,cex.lab=2, cex.axis=2, cex.main=2,breaks=20,xlim=c(0,20),ylim=c(0,200))
 dev.off()
 
 pdf('Output_files/W1WC/WC/hist_rec_per_mother.pdf')
 par(mfrow=c(1,1))
-hist(as.vector(meansum[,2],mode='numeric'),xlab='recombinations', main='W1 recombinations per father',cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
+hist(as.vector(meansum[,2],mode='numeric'),xlab='recombinations', main='W1 recombinations per mother',cex.lab=2, cex.axis=2, cex.main=2)
 dev.off()
 
 pdf('Output_files/W1WC/rec_per_Mb_both_parents.pdf')
@@ -179,7 +181,7 @@ capture.output(tor3b, file='Output_files/W1WC/WC/tor3b.txt')
 capture.output(recomb3b, file='Output_files/W1WC/WC/recomb3b.txt')
 write.table(recomb3c, file='Output_files/W1WC/WC/recomb3c.txt')
 ###per mother
-write.table(recomb_mot, 'Output_files/W1WC/WC/recomb_mot.txt')
+write.table(recomb_Mot, 'Output_files/W1WC/WC/recomb_Mot.txt')
 write.table(meansum, 'Output_files/W1WC/WC/meansum.txt')
 ##locations
 write.table(rec_per_core, 'Output_files/W1WC/WC/rec_per_core.txt')
