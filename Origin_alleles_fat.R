@@ -20,7 +20,7 @@ Cmot<-Coff[even_indexes,]
 #see where allele in offspring comes from
 n_IDs<-nrow(ped)
 PhasMisFat<-(matrix(as.integer(0),nrow=dim(ped)[1],ncol=dim(Cfat)[2]))   
-for (self in 1:n_IDs) {                                                     #paar minutjes
+for (self in 1:n_IDs) {                                                     
   sire_pos1<-which(ped$self==ped$father[self])*2-1
   sire_pos2<-which(ped$self==ped$father[self])*2
   if (length(sire_pos1)>0 & length(sire_pos2)>0){  	#if the parental haplotypes exist
@@ -100,7 +100,7 @@ Mistakes_snp2<-Mistakes_snp_fat[with(Mistakes_snp_fat, order(-Mistakes_snp_fat$m
 #phasing mistake where other haplotype has a phasing mistake
 PhasMisFat3<-PhasMisFat2
 for (i in 1:nrow(PhasMisFat3)){
-PhasMisFat3[i,which(PhasMisMot2[i,]==9)]<-as.integer(9)}
+PhasMisFat3[i,which(PhasMisMot2[i,]==5)]<-as.integer(5)}
 
 ########make plots############
 #make histograms
@@ -111,10 +111,10 @@ hist(as.vector(CountsPerID.df[4,2:ncol(CountsPerID.df)],mode="numeric"),breaks=1
 dev.off()
 
 #make boxplots
-pdf('Output_files/W1WC/W1/boxplots_mistakes_fat.pdf')
+pdf('Output_files/old/boxplots_mistakes_fat.pdf')
 par(mfrow=c(1,2))
-boxplot(t(CountsPerSNP.df[4,2:ncol(CountsPerSNP.df)]), main='mistakes marker',cex.lab=2, cex.axis=2, cex.main=2)
-boxplot(t(CountsPerID.df[4,2:ncol(CountsPerID.df)]), main='mistakes ind.',cex.lab=2, cex.axis=2, cex.main=2)
+boxplot(t(CountsPerSNP.df[4,2:ncol(CountsPerSNP.df)]), main='mistakes marker',cex.lab=2, cex.axis=2, cex.main=2,ylim=c(0,0.07))
+boxplot(t(CountsPerID.df[4,2:ncol(CountsPerID.df)]), main='mistakes ind.',cex.lab=2, cex.axis=2, cex.main=2, ylim=c(0,0.22))
 dev.off()
 
 #make barplot
@@ -135,5 +135,6 @@ write.table(Mistakes_ID, "Output_files/W1WC/W1/Mistakes_ID.txt")
 write.table(Mistakes_snp2, "Output_files/W1WC/W1/Mistakes_snp.txt")
 write.table(Mistakes_ID_scaled, "Output_files/W1WC/W1/Mistakes_ID_scaled.txt")
 write.table(PhasMisFat3, "Output_files/W1WC/W1/PhasMisFat3.txt")
+write.table(PhasMisFat2, "Output_files/W1WC/W1/PhasMisFat2.txt")
 write.table(sums, 'Output_files/W1WC/W1/frequencies.txt')
 
