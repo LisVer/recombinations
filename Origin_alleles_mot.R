@@ -21,7 +21,7 @@ Cmot<-Coff[even_indexes,]
 n_IDs<-nrow(ped)
 PhasMisMot<-(matrix(as.integer(0),nrow=dim(ped)[1],ncol=dim(Cmot)[2]))   
 
-for (self in 1:n_IDs) {                                                     #paar minutjes
+for (self in 1:n_IDs) {                                                     
   dam_pos1<-which(ped$self==ped$mother[self])*2-1
   dam_pos2<-which(ped$self==ped$mother[self])*2
   if (length(dam_pos1)>0 & length(dam_pos2)>0){  	#if the parental haplotypes exist
@@ -43,7 +43,7 @@ PhasMisMot2[,1]<-as.integer(as.character(ped$self))
 colnames(PhasMisMot2)<-colnames(C)
 PhasMisMot2<-subset(PhasMisMot2, PhasMisMot2[,1]>8000000)
 PhasMisMot2<-PhasMisMot2[complete.cases(PhasMisMot2),]
-write.table(PhasMisMot2, 'Output_files/W1WC/PhasMisMot2.txt')
+write.table(PhasMisMot2, 'Output_files/W1WC/WC/PhasMisMot2.txt')
 
 ###########################2########################################	 
 #count frequencies of allele origins per SNP
@@ -98,7 +98,7 @@ Mistakes_snp2<-Mistakes_snp_mot[with(Mistakes_snp_mot, order(-Mistakes_snp_mot$m
 #phasing mistake where other haplotype has a phasing mistake
 PhasMisMot3<-PhasMisMot2
 for (i in 1:nrow(PhasMisMot3)){
-PhasMisMot3[i,which(PhasMisFat2[i,]==9)]<-as.integer(9)}
+PhasMisMot3[i,which(PhasMisFat2[i,]==5)]<-as.integer(5)}
 
 ########make plots############
 #make histograms
@@ -111,8 +111,8 @@ dev.off()
 #make boxplots
 pdf('Output_files/W1WC/WC/boxplots_mistakes_mot.pdf')
 par(mfrow=c(1,2))
-boxplot(t(CountsPerSNP.df[4,2:ncol(CountsPerSNP.df)]), main='mistakes marker',cex.lab=2, cex.axis=2, cex.main=2)
-boxplot(t(CountsPerID.df[4,2:ncol(CountsPerID.df)]), main='mistakes ind.',cex.lab=2, cex.axis=2, cex.main=2)
+boxplot(t(CountsPerSNP.df[4,2:ncol(CountsPerSNP.df)]), main='mistakes marker',cex.lab=2, cex.axis=2, cex.main=2,ylim=c(0,0.21))
+boxplot(t(CountsPerID.df[4,2:ncol(CountsPerID.df)]), main='mistakes ind.',cex.lab=2, cex.axis=2, cex.main=2, ylim=c(0,0.25))
 dev.off()
 
 #make barplot
